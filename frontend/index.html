@@ -55,6 +55,12 @@
   <footer>
     <p>&copy; 2025 Mistiremariam Girma. All rights reserved.</p>
   </footer>
-
+ <script>
+        // Load header
+        fetch('components/header.html')
+        .then(res => res.text())
+        .then(data => document.querySelector('.site-header').innerHTML = data);
+    </script>
 </body>
 </html>
+   
