@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Employee Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="../js/main.js" defer></script>
+  <script src="../js/dashboard.js" defer></script>
+</head>
+<body>
+
+  <!-- Include Header -->
+  <div id="header-container"></div>
+
+  <!-- Include Sidebar -->
+  <div id="sidebar-container"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="dashboard-cards">
+      <div class="card">
+        <h3>Total Employees</h3>
+        <p id="totalEmployees">0</p>
+      </div>
+      <div class="card">
+        <h3>Departments</h3>
+        <p id="totalDepartments">0</p>
+      </div>
+      <div class="card">
+        <h3>Active Projects</h3>
+        <p id="totalProjects">0</p>
+      </div>
+    </div>
+
+    <section class="recent-employees">
+      <h2>Recent Employees</h2>
+      <table id="recentEmployeesTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Position</th>
+            <th>Date Hired</th>
+          </tr>
+        </thead>
+        <tbody id="recentEmployeesBody">
+          <!-- Dynamic rows via JS -->
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Mistiremariam Girma. All rights reserved.</p>
+  </footer>
+
+  <!-- Scripts to load components -->
+  <script>
+    // Load header
+    fetch('../components/header.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('header-container').innerHTML = data;
+      });
+
+    // Load sidebar
+    fetch('../components/sidebar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('sidebar-container').innerHTML = data;
+      });
+  </script>
+
+</body>
+</html>
