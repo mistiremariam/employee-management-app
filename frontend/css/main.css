@@ -1,0 +1,124 @@
+/* ===== Auth Pages Styling (login & register) ===== */
+
+/* Full-page container */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  padding: 20px;
+}
+
+/* Card container */
+.auth-card {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.auth-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading */
+.auth-card h2 {
+  color: #1a73e8;
+  margin-bottom: 25px;
+  font-size: 2rem;
+}
+
+/* Labels and inputs */
+.auth-card label {
+  display: block;
+  margin-top: 15px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.auth-card input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.auth-card input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 0 5px rgba(26, 115, 232, 0.5);
+}
+
+/* Buttons */
+.auth-card .btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.auth-card .btn.primary {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.auth-card .btn.primary:hover {
+  background-color: #155ab6;
+  transform: translateY(-2px);
+}
+
+.auth-card .btn.secondary {
+  background-color: transparent;
+  border: 2px solid #1a73e8;
+  color: #1a73e8;
+}
+
+.auth-card .btn.secondary:hover {
+  background-color: rgba(26, 115, 232, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Footer text for login/register */
+.auth-footer {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.auth-footer a {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 480px) {
+  .auth-card {
+    padding: 30px 20px;
+  }
+
+  .auth-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .auth-card input {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+}
