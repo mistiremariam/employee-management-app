@@ -4,75 +4,83 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Employee Management</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <script src="../js/main.js" defer></script>
-  <script src="../js/dashboard.js" defer></script>
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 
-  <!-- Include Header -->
-  <div id="header-container"></div>
+  <!-- Header -->
+  <header class="site-header">
+    <h1>Employee Management</h1>
+    <nav class="site-nav">
+      <ul>
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="employees.html">Employees</a></li>
+        <li><a href="login.html" id="logoutBtn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <!-- Include Sidebar -->
-  <div id="sidebar-container"></div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <ul>
+      <li><a href="dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="employees.html">Employees</a></li>
+    </ul>
+  </aside>
 
   <!-- Main Content -->
   <main class="main-content">
-    <div class="dashboard-cards">
-      <div class="card">
-        <h3>Total Employees</h3>
-        <p id="totalEmployees">0</p>
-      </div>
-      <div class="card">
-        <h3>Departments</h3>
-        <p id="totalDepartments">0</p>
-      </div>
-      <div class="card">
-        <h3>Active Projects</h3>
-        <p id="totalProjects">0</p>
-      </div>
+    <div class="page-header">
+      <h1>Employee Dashboard</h1>
+      <button class="btn primary" data-modal-target="#employeeModal">Add Employee</button>
     </div>
 
-    <section class="recent-employees">
-      <h2>Recent Employees</h2>
-      <table id="recentEmployeesTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Position</th>
-            <th>Date Hired</th>
-          </tr>
-        </thead>
-        <tbody id="recentEmployeesBody">
-          <!-- Dynamic rows via JS -->
-        </tbody>
-      </table>
-    </section>
+    <!-- Employee Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Position</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="employeeTableBody">
+        <!-- Employees will be populated here via JS -->
+      </tbody>
+    </table>
   </main>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Mistiremariam Girma. All rights reserved.</p>
-  </footer>
+  <!-- Modal Overlay -->
+  <div id="overlay"></div>
 
-  <!-- Scripts to load components -->
-  <script>
-    // Load header
-    fetch('../components/header.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('header-container').innerHTML = data;
-      });
+  <!-- Employee Modal (Add/Edit) -->
+  <div class="modal" id="employeeModal">
+    <div class="modal-content">
+      <button class="close-btn" data-close-button>&times;</button>
+      <h3>Add/Edit Employee</h3>
+      <form id="employeeForm">
+        <input type="hidden" id="empId">
 
-    // Load sidebar
-    fetch('../components/sidebar.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('sidebar-container').innerHTML = data;
-      });
-  </script>
+        <label for="empFirstName">First Name</label>
+        <input type="text" id="empFirstName" required>
 
+        <label for="empLastName">Last Name</label>
+        <input type="text" id="empLastName" required>
+
+        <label for="empEmail">Email</label>
+        <input type="email" id="empEmail" required>
+
+        <label for="empPosition">Position</label>
+        <input type="text" id="empPosition" required>
+
+        <button type="submit" class="btn primary">Save Employee</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/main.js"></script>
 </body>
 </html>
