@@ -4,33 +4,178 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register | Employee Management</title>
-  <link rel="stylesheet" href="../css/style.css">
-  <script src="../js/register.js" defer></script>
+  <style>
+    /* Background with animated gradient */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(-45deg, #1a1a2e, #0f3460, #16213e, #000);
+      background-size: 400% 400%;
+      animation: gradientShift 12s ease infinite;
+      overflow: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Floating blurred shapes */
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.4;
+      animation: float 10s infinite alternate ease-in-out;
+    }
+    .shape1 { width: 300px; height: 300px; background: #6c63ff; top: 5%; left: 10%; }
+    .shape2 { width: 250px; height: 250px; background: #00f2fe; bottom: 10%; right: 15%; }
+    .shape3 { width: 200px; height: 200px; background: #f72585; top: 60%; left: 20%; }
+    .shape4 { width: 350px; height: 350px; background:rgb(109, 215, 64); top: 30%; left: 40%;}
+
+    @keyframes float {
+      from { transform: translateY(0px); }
+      to { transform: translateY(30px); }
+    }
+
+    /* Centered register card with glassmorphism */
+    .register-card {
+  position: relative;
+  width: 460px;         /* balanced width */
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 46px;
+  padding: 1.5rem;      /* smaller padding */
+  backdrop-filter: blur(18px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+  text-align: center;
+  z-index: 2;
+  animation: fadeIn 0.9s ease-in-out;
+  transform: scale(0.9);  /* overall shrink */
+}
+
+/* make inputs + buttons smaller */
+.register-card input {
+  padding: 10px 12px;
+  font-size: 0.9rem;
+}
+
+.register-card button {
+  padding: 10px 18px;
+  font-size: 0.9rem;
+}
+
+
+
+    .register-card h2 {
+      margin-bottom: 1.5rem;
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.7rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    label {
+      font-size: 0.85rem;
+      text-align: left;
+      color: #ccc;
+    }
+
+    input {
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s ease;
+    }
+
+    input:focus {
+      background: rgba(0,0,0,0.8);
+      box-shadow: 0 0 12px rgba(21, 18, 78, 0.7);
+    }
+
+    .btn.primary {
+      margin-top: 1rem;
+      padding: 12px;
+      background: linear-gradient(135deg,rgb(38, 35, 89),rgb(2, 20, 21));
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 0 18px rgba(108, 99, 255, 0.6);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 25px rgba(108, 99, 255, 0.9);
+    }
+
+    .register-footer {
+      margin-top: 1.3rem;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+
+    .register-footer a {
+      color: #00f2fe;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .register-footer a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <div class="register-container">
-    <div class="register-card">
-      <h2>Create Admin Account</h2>
-      <form id="registerForm">
-        <label for="firstName">First Name</label>
-        <input type="text" id="firstName" placeholder="John" required>
+  <!-- Floating shapes -->
+  <div class="shape shape1"></div>
+  <div class="shape shape2"></div>
+  <div class="shape shape3"></div>
 
-        <label for="lastName">Last Name</label>
-        <input type="text" id="lastName" placeholder="Doe" required>
+  <!-- Register form card -->
+  <div class="register-card">
+    <h2>Create Admin Account</h2>
+    <form id="registerForm">
+      <label for="firstName">First Name</label>
+      <input type="text" id="firstName" placeholder="John" required>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="admin@example.com" required>
+      <label for="lastName">Last Name</label>
+      <input type="text" id="lastName" placeholder="Doe" required>
 
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="********" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="admin@example.com" required>
 
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" placeholder="********" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="********" required>
 
-        <button type="submit" class="btn primary">Register</button>
-      </form>
-      <p class="register-footer">Already have an account? <a href="login.html">Login here</a></p>
-    </div>
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" id="confirmPassword" placeholder="********" required>
+
+      <button type="submit" class="btn primary">Register</button>
+    </form>
+    <p class="register-footer">Already have an account? <a href="login.html">Login here</a></p>
   </div>
 </body>
 </html>

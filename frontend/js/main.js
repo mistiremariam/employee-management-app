@@ -1,160 +1,155 @@
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.querySelector('.site-nav ul');
+// ../js/main.js
+// Dashboard frontend-only employee CRUD (works without backend).
+// Replaces previous main.js — uses event delegation and robust modal handling.
 
-hamburger.addEventListener('click', () => {
-  navMenu.classList.toggle('show');
-});
-// ===== DASHBOARD & EMPLOYEES LOGIC =====
+document.addEventListener('DOMContentLoaded', () => {
+  // Elements
+  const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+  const overlay = document.getElementById('overlay');
+  const employeeModal = document.getElementById('employeeModal');
+  const closeButtons = document.querySelectorAll('[data-close-button]');
+  const employeeForm = document.getElementById('employeeForm');
+  const employeeTableBody = document.getElementById('employeeTableBody');
 
-// Modal Handling
-const openModalButtons = document.querySelectorAll('[data-modal-target]');
-const closeModalButtons = document.querySelectorAll('[data-close-button]');
-const overlay = document.getElementById('overlay');
+  if (!employeeTableBody) return; // safety
 
-openModalButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const modal = document.querySelector(button.dataset.modalTarget);
-    openModal(modal);
-  });
-});
+  // Local storage key (for demo persistence)
+  const STORAGE_KEY = 'ems_demo_employees';
 
-closeModalButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    const modal = button.closest('.modal');
-    closeModal(modal);
-  });
-});
-
-overlay.addEventListener('click', () => {
-  const modals = document.querySelectorAll('.modal.active');
-  modals.forEach(modal => closeModal(modal));
-});
-
-function openModal(modal) {
-  if (modal == null) return;
-  modal.classList.add('active');
-  overlay.classList.add('active');
-}
-
-function closeModal(modal) {
-  if (modal == null) return;
-  modal.classList.remove('active');
-  overlay.classList.remove('active');
-}
-
-// ===== Employee CRUD Operations =====
-async function fetchEmployees() {
-  try {
-    const res = await fetch('/api/employees', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-    });
-    const employees = await res.json();
-    populateEmployeeTable(employees);
-  } catch (error) {
-    console.error(error);
+  // initial sample data if nothing in storage
+  let employees = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  if (!Array.isArray(employees)) {
+    employees = [
+      { id: 1, first: 'John', last: 'Doe', email: 'john@example.com', position: 'Manager' },
+      { id: 2, first: 'Jane', last: 'Smith', email: 'jane@example.com', position: 'Developer' }
+    ];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
   }
-}
 
-function populateEmployeeTable(employees) {
-  const tableBody = document.getElementById('employeeTableBody');
-  tableBody.innerHTML = '';
-  employees.forEach(emp => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${emp.firstName}</td>
-      <td>${emp.lastName}</td>
-      <td>${emp.email}</td>
-      <td>${emp.position}</td>
-      <td>
-        <button class="btn primary" onclick="editEmployee('${emp._id}')">Edit</button>
-        <button class="btn secondary" onclick="deleteEmployee('${emp._id}')">Delete</button>
-      </td>
-    `;
-    tableBody.appendChild(tr);
-  });
-}
-
-// ===== Edit Employee =====
-async function editEmployee(id) {
-  try {
-    const res = await fetch(`/api/employees/${id}`, {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-    });
-    const emp = await res.json();
-    // Populate modal fields
-    document.getElementById('empId').value = emp._id;
-    document.getElementById('empFirstName').value = emp.firstName;
-    document.getElementById('empLastName').value = emp.lastName;
-    document.getElementById('empEmail').value = emp.email;
-    document.getElementById('empPosition').value = emp.position;
-    openModal(document.getElementById('employeeModal'));
-  } catch (error) {
-    console.error(error);
+  // --------- Helpers ----------
+  function saveEmployees() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(employees));
   }
-}
 
-// ===== Delete Employee =====
-async function deleteEmployee(id) {
-  if (!confirm('Are you sure you want to delete this employee?')) return;
+  function openModal() {
+    // reset form for "Add"
+    employeeForm.reset();
+    document.getElementById('empId').value = '';
+    employeeModal.classList.add('active');
+    overlay.classList.add('active');
+    // focus first field for accessibility
+    setTimeout(() => document.getElementById('empFirstName').focus(), 120);
+  }
 
-  try {
-    const res = await fetch(`/api/employees/${id}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-    });
+  function closeModal() {
+    employeeModal.classList.remove('active');
+    overlay.classList.remove('active');
+  }
 
-    if (res.ok) {
-      alert('Employee deleted successfully');
-      fetchEmployees();
-    } else {
-      const data = await res.json();
-      alert(data.message || 'Failed to delete employee');
+  function renderEmployees() {
+    employeeTableBody.innerHTML = '';
+    if (employees.length === 0) {
+      employeeTableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:1.2rem">No employees yet</td></tr>`;
+      return;
     }
-  } catch (error) {
-    console.error(error);
+
+    employees.forEach(emp => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${escapeHtml(emp.first)}</td>
+        <td>${escapeHtml(emp.last)}</td>
+        <td>${escapeHtml(emp.email)}</td>
+        <td>${escapeHtml(emp.position)}</td>
+        <td>
+          <button class="small edit-btn" data-id="${emp.id}" title="Edit"><i class="fas fa-edit"></i></button>
+          <button class="small danger delete-btn" data-id="${emp.id}" title="Delete"><i class="fas fa-trash"></i></button>
+        </td>
+      `;
+      employeeTableBody.appendChild(tr);
+    });
   }
-}
 
-// ===== Save Employee (Add/Edit) =====
-const employeeForm = document.getElementById('employeeForm');
-if (employeeForm) {
-  employeeForm.addEventListener('submit', async (e) => {
+  // simple text escape for safe innerHTML insertion
+  function escapeHtml(str) {
+    if (!str && str !== 0) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // --------- Event wiring ----------
+  addEmployeeBtn.addEventListener('click', openModal);
+
+  overlay.addEventListener('click', closeModal);
+  closeButtons.forEach(btn => btn.addEventListener('click', closeModal));
+
+  // close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // Form submit => add or update
+  employeeForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
     const id = document.getElementById('empId').value;
-    const firstName = document.getElementById('empFirstName').value.trim();
-    const lastName = document.getElementById('empLastName').value.trim();
+    const first = document.getElementById('empFirstName').value.trim();
+    const last = document.getElementById('empLastName').value.trim();
     const email = document.getElementById('empEmail').value.trim();
     const position = document.getElementById('empPosition').value.trim();
 
-    const payload = { firstName, lastName, email, position };
+    // minimal validation
+    if (!first || !last || !email || !position) {
+      alert('Please fill in all fields.');
+      return;
+    }
 
-    try {
-      const res = await fetch(id ? `/api/employees/${id}` : '/api/employees', {
-        method: id ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert(`Employee ${id ? 'updated' : 'added'} successfully`);
-        fetchEmployees();
-        closeModal(document.getElementById('employeeModal'));
-      } else {
-        alert(data.message || 'Failed to save employee');
+    if (id) {
+      // update
+      const idx = employees.findIndex(e => String(e.id) === String(id));
+      if (idx !== -1) {
+        employees[idx] = { id: Number(id), first, last, email, position };
       }
-    } catch (error) {
-      console.error(error);
+    } else {
+      // create
+      const newEmp = { id: Date.now(), first, last, email, position };
+      employees.push(newEmp);
+    }
+
+    saveEmployees();
+    renderEmployees();
+    closeModal();
+  });
+
+  // event delegation for edit/delete
+  employeeTableBody.addEventListener('click', (e) => {
+    const editBtn = e.target.closest('.edit-btn');
+    const delBtn = e.target.closest('.delete-btn');
+
+    if (editBtn) {
+      const id = editBtn.dataset.id;
+      const emp = employees.find(x => String(x.id) === String(id));
+      if (!emp) return;
+      document.getElementById('empId').value = emp.id;
+      document.getElementById('empFirstName').value = emp.first;
+      document.getElementById('empLastName').value = emp.last;
+      document.getElementById('empEmail').value = emp.email;
+      document.getElementById('empPosition').value = emp.position;
+      openModal();
+      return;
+    }
+
+    if (delBtn) {
+      const id = delBtn.dataset.id;
+      if (!confirm('Delete this employee?')) return;
+      employees = employees.filter(x => String(x.id) !== String(id));
+      saveEmployees();
+      renderEmployees();
     }
   });
-}
 
-// ===== Initialize =====
-document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('employeeTableBody')) fetchEmployees();
+  // initial render
+  renderEmployees();
 });

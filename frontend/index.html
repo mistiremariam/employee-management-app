@@ -1,16 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Employee Management System</title>
-  <link rel="stylesheet" href="css/style.css">
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <!-- Modern CSS -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; }
+
+    /* ===== Header ===== */
+    .site-header {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      padding: 18px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .site-nav ul {
+      display: flex;
+      gap: 25px;
+      list-style: none;
+    }
+    .site-nav ul li a {
+      color: #e2e8f0;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+    .site-nav ul li a:hover,
+    .site-nav ul li a.active {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    /* ===== Hero ===== */
+    .landing-hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 20px 80px;
+      background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%);
+      position: relative;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .landing-hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg,#38bdf8,#818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .landing-hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+      color: #cbd5e1;
+    }
+
+    .landing-buttons .btn {
+      padding: 14px 35px;
+      margin: 10px;
+      font-weight: 600;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: 0.4s ease;
+      font-size: 1rem;
+      display: inline-block;
+      text-align: center;
+    }
+    .btn.primary {
+      background: linear-gradient(45deg,#38bdf8,#6366f1);
+      color: #fff;
+      box-shadow: 0 8px 25px rgba(56,189,248,0.3);
+    }
+    .btn.primary:hover {
+      transform: translateY(-4px);
+    }
+    .btn.secondary {
+      background: transparent;
+      color: #38bdf8;
+      border: 2px solid #38bdf8;
+    }
+    .btn.secondary:hover {
+      background: #38bdf8;
+      color: #0f172a;
+      transform: translateY(-4px);
+    }
+
+    /* ===== Animated Background Shapes ===== */
+    .shape {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 12s infinite ease-in-out alternate;
+      z-index: 0;
+    }
+    .shape1 {
+      width: 400px; height: 400px;
+      top: -100px; left: -150px;
+      background: radial-gradient(circle,#38bdf8,#0ea5e9);
+    }
+    .shape2 {
+      width: 350px; height: 350px;
+      bottom: -120px; right: -100px;
+      background: radial-gradient(circle,#818cf8,#4f46e5);
+      animation-delay: 3s;
+    }
+    .shape3 {
+      width: 300px; height: 300px;
+      bottom: 50px; left: 30%;
+      background: radial-gradient(circle,#14b8a6,#0f766e);
+      animation-delay: 6s;
+    }
+    @keyframes float {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-40px) rotate(25deg); }
+    }
+
+    /* ===== Features ===== */
+    .features-section {
+      padding: 100px 20px;
+      text-align: center;
+      background: #1e293b;
+    }
+    .features-section h2 {
+      font-size: 2.8rem;
+      margin-bottom: 60px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+    .features-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .feature-card {
+      background: #0f172a;
+      border-radius: 16px;
+      padding: 40px 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      transition: all 0.4s ease;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .feature-card:hover {
+      transform: translateY(-12px) scale(1.02);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    }
+    .feature-card i {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #38bdf8;
+    }
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    .feature-card p {
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      background: #0f172a;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width:768px) {
+      .landing-hero h1 { font-size: 2.4rem; }
+      .landing-hero p { font-size: 1rem; }
+      .site-header { padding: 15px 25px; }
+      .site-nav ul { gap: 15px; }
+    }
+  </style>
 </head>
 <body>
   
   <!-- Header -->
-  <header class="site-header landing-header">
+  <header class="site-header">
+    <div class="logo">EMS</div>
     <nav class="site-nav">
       <ul>
         <li><a href="#" class="active">Home</a></li>
@@ -19,34 +230,41 @@
         <li><a href="pages/dashboard.html">Dashboard</a></li>
       </ul>
     </nav>
-    <div class="landing-hero">
-      <h1>Welcome to Employee Management System</h1>
-      <p>Manage employees efficiently, safely, and intuitively. Access all features with a modern and secure interface.</p>
-      <div class="landing-buttons">
-        <a href="pages/register.html" class="btn primary">Get Started</a>
-        <a href="pages/login.html" class="btn secondary">Login</a>
-      </div>
-    </div>
   </header>
 
-  <!-- Features Section -->
+  <!-- Hero -->
+  <div class="landing-hero">
+    <!-- Animated background shapes -->
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+
+    <h1>Manage Employees Smarter</h1>
+    <p>Our Employee Management System gives you secure access, easy record handling, and insightful dashboards—all in one elegant platform.</p>
+    <div class="landing-buttons">
+      <a href="pages/register.html" class="btn primary">Get Started</a>
+      <a href="pages/login.html" class="btn secondary">Login</a>
+    </div>
+  </div>
+
+  <!-- Features -->
   <section class="features-section">
-    <h2>Key Features</h2>
+    <h2>Why Choose Us?</h2>
     <div class="features-cards">
       <div class="feature-card">
-        <i class="fas fa-users fa-2x"></i>
+        <i class="fas fa-users"></i>
         <h3>Employee Management</h3>
-        <p>Create, update, delete, and view employee records with ease.</p>
+        <p>Effortlessly create, update, delete, and manage employee records.</p>
       </div>
       <div class="feature-card">
-        <i class="fas fa-shield-alt fa-2x"></i>
-        <h3>Secure Authentication</h3>
-        <p>Only authorized admins can access sensitive employee data.</p>
+        <i class="fas fa-lock"></i>
+        <h3>Data Security</h3>
+        <p>Protect sensitive information with role-based authentication.</p>
       </div>
       <div class="feature-card">
-        <i class="fas fa-chart-line fa-2x"></i>
-        <h3>Dashboard & Analytics</h3>
-        <p>Visualize employee data, departments, and projects in one place.</p>
+        <i class="fas fa-chart-line"></i>
+        <h3>Smart Analytics</h3>
+        <p>Track performance and insights with our interactive dashboards.</p>
       </div>
     </div>
   </section>
@@ -55,12 +273,5 @@
   <footer>
     <p>&copy; 2025 Mistiremariam Girma. All rights reserved.</p>
   </footer>
- <script>
-        // Load header
-        fetch('components/header.html')
-        .then(res => res.text())
-        .then(data => document.querySelector('.site-header').innerHTML = data);
-    </script>
 </body>
 </html>
-   

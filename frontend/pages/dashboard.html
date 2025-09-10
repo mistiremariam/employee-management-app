@@ -4,14 +4,127 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Employee Management</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <!-- keep or remove external main.css if you prefer; inline styles below ensure functionality -->
   <link rel="stylesheet" href="../css/main.css">
+  
+
+  <style>
+    /* --- Dashboard styles (keeps visual from earlier) --- */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: #fff;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(12px);
+      padding: 1.5rem;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+    }
+    .sidebar ul { list-style: none; padding: 0; }
+    .sidebar ul li { margin: 1rem 0; }
+    .sidebar ul li a { color: #ccc; text-decoration: none; padding: 0.7rem 1rem; border-radius: 8px; display: block; }
+    .sidebar ul li a.active, .sidebar ul li a:hover { background: rgba(0,198,255,0.12); color: #00c6ff; }
+
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 240px;
+      right: 0;
+      height: 70px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      z-index: 1000;
+    }
+    .site-header h1 { font-size: 1.1rem; color: #fff; margin: 0; }
+    .site-nav ul { display:flex; gap: 20px; list-style:none; margin:0; padding:0; }
+    .site-nav a { color:#ccc; text-decoration:none; padding:0.5rem 1rem; border-radius:8px; }
+    .site-nav a.active, .site-nav a:hover { background: rgba(0,198,255,0.12); color:#00c6ff; }
+
+    .main-content {
+      margin-left: 240px;
+      margin-top: 80px;
+      padding: 2rem;
+      flex: 1;
+      overflow: auto;
+    }
+    .page-header { display:flex; justify-content:space-between; align-items:center; gap: 1rem; flex-wrap:wrap; margin-bottom:1.5rem; }
+    .page-header h1 { margin:0; font-size:1.4rem; }
+
+    .btn { padding:0.7rem 1rem; border-radius:10px; border:none; font-weight:600; cursor:pointer; }
+    .btn.primary { background: linear-gradient(135deg,#00c6ff,#0072ff); color:#fff; }
+    .btn.secondary { background: transparent; border: 1px solid rgba(255,255,255,0.08); color:#fff; }
+
+    table {
+      width:100%; border-collapse: collapse; background: rgba(255,255,255,0.03); border-radius:12px; overflow:hidden;
+    }
+    thead { background: rgba(255,255,255,0.06); }
+    th, td { padding: 0.9rem 1rem; text-align:left; font-size:0.95rem; }
+    th { color:#00c6ff; font-weight:600; }
+    tbody tr:nth-child(even){ background: rgba(255,255,255,0.02); }
+    tbody tr:hover { background: rgba(0,198,255,0.06); }
+
+    /* overlay + modal visibility */
+    #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; z-index: 900; }
+    #overlay.active { display:block; }
+
+    .modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%) scale(0.9);
+      background: rgba(30,30,30,0.98);
+      backdrop-filter: blur(10px);
+      padding: 1.8rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      width: 420px;
+      max-width: 94%;
+      display: none;
+      z-index: 1000;
+      color: #fff;
+      transition: transform 180ms ease, opacity 180ms ease;
+      opacity: 0;
+    }
+    .modal.active { display: block; transform: translate(-50%,-50%) scale(1); opacity: 1; }
+
+    .modal h3 { margin-top:0; margin-bottom:12px; font-size:1.2rem; }
+    .modal label { display:block; margin-top:10px; margin-bottom:6px; color: #cbd5e1; font-size:0.9rem; }
+    .modal input { width:100%; padding:10px; border-radius:8px; border:none; background: rgba(255,255,255,0.05); color:#fff; outline:none; }
+
+    .close-btn { position:absolute; top:10px; right:12px; background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer; }
+
+    .small { padding:6px 8px; font-size:0.9rem; border-radius:8px; }
+    .danger { background: linear-gradient(135deg,#ff6b6b,#ff3b3b); color:#fff; border:none; }
+
+    footer { margin-top: 1.8rem; color:#cbd5e1; font-size:0.9rem; text-align:center; }
+  </style>
 </head>
 <body>
 
+  <!-- Sidebar -->
+  <aside class="sidebar" aria-label="Main navigation">
+    <ul>
+      <li><a href="dashboard.html" class="active"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="employees.html"><i class="fas fa-users"></i> Employees</a></li>
+    </ul>
+  </aside>
+
   <!-- Header -->
-  <header class="site-header">
+  <header class="site-header" role="banner">
     <h1>Employee Management</h1>
-    <nav class="site-nav">
+    <nav class="site-nav" role="navigation">
       <ul>
         <li><a href="dashboard.html" class="active">Dashboard</a></li>
         <li><a href="employees.html">Employees</a></li>
@@ -20,67 +133,62 @@
     </nav>
   </header>
 
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <ul>
-      <li><a href="dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="employees.html">Employees</a></li>
-    </ul>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="main-content">
+  <!-- Main -->
+  <main class="main-content" role="main">
     <div class="page-header">
       <h1>Employee Dashboard</h1>
-      <button class="btn primary" data-modal-target="#employeeModal">Add Employee</button>
+      <div style="display:flex; gap:8px;">
+        <a href="employees.html" class="btn secondary" title="Go to Employees page">Employees Page</a>
+        <button id="addEmployeeBtn" class="btn primary" title="Add employee"><i class="fas fa-user-plus" style="margin-right:.5rem"></i> Add Employee</button>
+      </div>
     </div>
 
-    <!-- Employee Table -->
-    <table>
+    <table aria-describedby="employee-table">
       <thead>
         <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Position</th>
-          <th>Actions</th>
+          <th>First Name</th><th>Last Name</th><th>Email</th><th>Position</th><th>Actions</th>
         </tr>
       </thead>
       <tbody id="employeeTableBody">
-        <!-- Employees will be populated here via JS -->
+        <!-- rendered by main.js -->
       </tbody>
     </table>
+
+    <footer>
+      <p>&copy; 2025 Mistiremariam Girma. All rights reserved.</p>
+    </footer>
   </main>
 
-  <!-- Modal Overlay -->
-  <div id="overlay"></div>
+  <!-- Overlay + Modal (single copies only) -->
+  <div id="overlay" tabindex="-1" aria-hidden="true"></div>
 
-  <!-- Employee Modal (Add/Edit) -->
-  <div class="modal" id="employeeModal">
-    <div class="modal-content">
-      <button class="close-btn" data-close-button>&times;</button>
-      <h3>Add/Edit Employee</h3>
-      <form id="employeeForm">
-        <input type="hidden" id="empId">
+  <div class="modal" id="employeeModal" role="dialog" aria-modal="true" aria-labelledby="employeeModalTitle">
+    <button class="close-btn" data-close-button aria-label="Close modal">&times;</button>
+    <h3 id="employeeModalTitle">Add / Edit Employee</h3>
 
-        <label for="empFirstName">First Name</label>
-        <input type="text" id="empFirstName" required>
+    <form id="employeeForm" novalidate>
+      <input type="hidden" id="empId" />
 
-        <label for="empLastName">Last Name</label>
-        <input type="text" id="empLastName" required>
+      <label for="empFirstName">First name</label>
+      <input id="empFirstName" name="first" required autocomplete="given-name" />
 
-        <label for="empEmail">Email</label>
-        <input type="email" id="empEmail" required>
+      <label for="empLastName">Last name</label>
+      <input id="empLastName" name="last" required autocomplete="family-name" />
 
-        <label for="empPosition">Position</label>
-        <input type="text" id="empPosition" required>
+      <label for="empEmail">Email</label>
+      <input id="empEmail" name="email" type="email" required autocomplete="email" />
 
-        <button type="submit" class="btn primary">Save Employee</button>
-      </form>
-    </div>
+      <label for="empPosition">Position</label>
+      <input id="empPosition" name="position" required />
+
+      <div style="margin-top:1rem; display:flex; gap:10px; justify-content:flex-end;">
+        <button type="button" class="btn secondary" data-close-button>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
   </div>
 
-  <!-- Scripts -->
+  <!-- JS - replace ../js/main.js with the script below -->
   <script src="../js/main.js"></script>
 </body>
 </html>

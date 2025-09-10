@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employees | Employee Management</title>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="../css/main.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: #fff;
+      display: flex;
+      min-height: 100vh;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: rgba(0,0,0,0.25);
+      backdrop-filter: blur(12px);
+      padding: 1.2rem;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.3);
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      margin: 1rem 0;
+    }
+    .sidebar ul li a {
+      color: #ccc;
+      text-decoration: none;
+      padding: 0.7rem 1rem;
+      display: block;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .sidebar ul li a.active,
+    .sidebar ul li a:hover {
+      background: rgba(0,198,255,0.2);
+      color: #00c6ff;
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      padding: 2rem;
+      overflow-x: auto;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .btn {
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s ease;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: #fff;
+    }
+    .btn.primary:hover {
+      box-shadow: 0 6px 18px rgba(0,198,255,0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+    thead {
+      background: rgba(255,255,255,0.1);
+    }
+    th {
+      font-weight: 600;
+      color: #00c6ff;
+    }
+    tbody tr:nth-child(even) {
+      background: rgba(255,255,255,0.03);
+    }
+    tbody tr:hover {
+      background: rgba(0,198,255,0.1);
+      transition: 0.3s;
+    }
+
+    /* Actions */
+    .action-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      margin: 0 5px;
+      font-size: 1.1rem;
+      transition: color 0.3s ease;
+    }
+    .action-btn.edit { color: #00c6ff; }
+    .action-btn.delete { color: #ff5c5c; }
+    .action-btn:hover { opacity: 0.8; }
+
+    /* Modal */
+    #overlay {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.6);
+      display:none;
+      z-index:900;
+    }
+    .modal {
+      position: fixed;
+      top:50%; left:50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      background: rgba(30,30,30,0.95);
+      backdrop-filter: blur(12px);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      width: 500px;
+      max-width: 90%;
+      display: none;
+      z-index:1000;
+      color:#fff;
+    }
+    .modal.active { display: block; transform: translate(-50%, -50%) scale(1); transition:0.3s ease; }
+    .modal h3 { margin-bottom: 1rem; }
+    .modal label { display:block; margin:0.8rem 0 0.3rem; }
+    .modal input { width:100%; padding:0.7rem; border-radius:8px; border:none; margin-bottom:1rem; background: rgba(255,255,255,0.1); color:#fff; }
+    .close-btn { position:absolute; top:12px; right:15px; background:none; border:none; font-size:1.5rem; color:#fff; cursor:pointer; }
+
+    footer {
+      text-align:center;
+      padding:1rem;
+      font-size:0.85rem;
+      color:#ccc;
+      margin-top:2rem;
+    }
+    /* Modal overlay */
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  z-index: 900;
+}
+
+/* Modal box */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(30,30,30,0.95);
+  backdrop-filter: blur(12px);
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  width: 450px;
+  max-width: 90%;
+  max-height: 80vh;   /* scrollable if content too long */
+  overflow-y: auto;
+  display: none;       /* hidden by default */
+  z-index: 1000;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+/* Show modal when active */
+.modal.active {
+  display: block;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <ul>
+      <li><a href="dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+      <li><a href="employees.html" class="active"><i class="fas fa-users"></i> Employees</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="page-header">
+      <h1>Employees</h1>
+      <button class="btn primary" id="addEmployeeBtn"><i class="fas fa-user-plus"></i> Add Employee</button>
+    </div>
+
+    <table id="employeeTable">
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Position</th>
+          <th>Department</th>
+          <th>Salary</th>
+          <th>Date Hired</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="employeeTableBody">
+        <!-- Dynamic rows added via JS -->
+      </tbody>
+    </table>
+
+    <footer>
+      <p>&copy; 2025 Mistiremariam Girma. All rights reserved.</p>
+    </footer>
+  </main>
+
+  <!-- Modal Overlay -->
+  <div id="overlay"></div>
+
+  <!-- Employee Modal -->
+  <div class="modal" id="employeeModal">
+    <button class="close-btn" data-close-button>&times;</button>
+    <h3>Add Employee</h3>
+    <form id="employeeForm">
+      <input type="hidden" id="empId">
+      <label for="empFirstName">First Name</label>
+      <input type="text" id="empFirstName" required>
+      <label for="empLastName">Last Name</label>
+      <input type="text" id="empLastName" required>
+      <label for="empEmail">Email</label>
+      <input type="email" id="empEmail" required>
+      <label for="empPhone">Phone</label>
+      <input type="text" id="empPhone">
+      <label for="empPosition">Position</label>
+      <input type="text" id="empPosition">
+      <label for="empDepartment">Department</label>
+      <input type="text" id="empDepartment">
+      <label for="empSalary">Salary</label>
+      <input type="text" id="empSalary">
+      <label for="empDateHired">Date Hired</label>
+      <input type="date" id="empDateHired">
+      <button type="submit" class="btn primary">Save Employee</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    const overlay = document.getElementById('overlay');
+    const modal = document.getElementById('employeeModal');
+    const addBtn = document.getElementById('addEmployeeBtn');
+    const closeBtn = modal.querySelector('[data-close-button]');
+    const form = document.getElementById('employeeForm');
+    const tbody = document.getElementById('employeeTableBody');
+
+    let employees = [];
+
+    // Open modal
+    addBtn.addEventListener('click', () => {
+      modal.classList.add('active');
+      overlay.style.display = 'block';
+      form.reset();
+    });
+
+    // Close modal
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      overlay.style.display = 'none';
+    });
+    overlay.addEventListener('click', () => {
+      modal.classList.remove('active');
+      overlay.style.display = 'none';
+    });
+
+    // Submit form
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const emp = {
+        id: Date.now(),
+        first: form.empFirstName.value,
+        last: form.empLastName.value,
+        email: form.empEmail.value,
+        phone: form.empPhone.value,
+        position: form.empPosition.value,
+        department: form.empDepartment.value,
+        salary: form.empSalary.value,
+        dateHired: form.empDateHired.value
+      };
+      employees.push(emp);
+      renderTable();
+      modal.classList.remove('active');
+      overlay.style.display = 'none';
+    });
+
+    // Render table
+    function renderTable() {
+      tbody.innerHTML = '';
+      employees.forEach(emp => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${emp.first}</td>
+          <td>${emp.last}</td>
+          <td>${emp.email}</td>
+          <td>${emp.phone}</td>
+          <td>${emp.position}</td>
+          <td>${emp.department}</td>
+          <td>${emp.salary}</td>
+          <td>${emp.dateHired}</td>
+          <td>
+            <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete"><i class="fas fa-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(row);
+
+        // Edit
+        row.querySelector('.edit').addEventListener('click', () => {
+          modal.classList.add('active');
+          overlay.style.display = 'block';
+          form.empId.value = emp.id;
+          form.empFirstName.value = emp.first;
+          form.empLastName.value = emp.last;
+          form.empEmail.value = emp.email;
+          form.empPhone.value = emp.phone;
+          form.empPosition.value = emp.position;
+          form.empDepartment.value = emp.department;
+          form.empSalary.value = emp.salary;
+          form.empDateHired.value = emp.dateHired;
+        });
+
+        // Delete
+        row.querySelector('.delete').addEventListener('click', () => {
+          employees = employees.filter(e => e.id !== emp.id);
+          renderTable();
+        });
+      });
+    }
+
+    // Initialize with sample data
+    employees = [
+      {id:1, first:'John', last:'Doe', email:'john@example.com', phone:'+251912345678', position:'Developer', department:'IT', salary:'5000', dateHired:'2023-06-12'}
+    ];
+    renderTable();
+    
+  </script>
+</body>
+</html>
